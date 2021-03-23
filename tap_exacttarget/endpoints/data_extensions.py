@@ -234,16 +234,14 @@ class DataExtensionDataAccessObject(DataAccessObject):
 
         keys.remove('CategoryID')
 
-        replication_key = None
+        replication_key = self.state.get('bookmarks', {}) \
+                                    .get(table, {}) \
+                                    .get('field', None)
 
         start = get_last_record_value_for_table(self.state, table)
 
         if start is None:
             start = self.config.get('start_date')
-
-        for key in ['ModifiedDate', 'JoinDate']:
-            if key in keys:
-                replication_key = key
 
         pagination_unit = self.config.get(
             'pagination__data_extension_interval_unit', 'days')
