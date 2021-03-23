@@ -32,4 +32,4 @@ def increment_date(date_value, unit=None):
 
 
 def get_date_page(field, start, unit):
-    return between(field, start, increment_date(start, unit))
+    return between(field, start, increment_date(start, unit)[0])
