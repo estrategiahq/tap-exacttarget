@@ -250,8 +250,6 @@ class DataExtensionDataAccessObject(DataAccessObject):
 
         unit = {pagination_unit: int(pagination_quantity)}
 
-        end = increment_date(start, unit)
-
         parent_result = None
         parent_extension = None
         parent_result = request(
@@ -268,7 +266,9 @@ class DataExtensionDataAccessObject(DataAccessObject):
         parent_extension = next(parent_result)
         parent_category_id = parent_extension.CategoryID
 
-        while before_now(start) or replication_key is None:
+        exceeded = False
+        while (not exceeded) or replication_key is None:
+            end, exceeded = increment_date(start, unit)
             self._replicate(
                 customer_key,
                 keys,
@@ -291,4 +291,3 @@ class DataExtensionDataAccessObject(DataAccessObject):
             save_state(self.state)
 
             start = end
-            end = increment_date(start, unit)
