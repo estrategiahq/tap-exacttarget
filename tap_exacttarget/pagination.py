@@ -23,10 +23,10 @@ def increment_date(date_value, unit=None):
 
     if incremented_date_obj < now:
         str_date = datetime.datetime.strftime(incremented_date_obj, DATE_FORMAT)
-        exceeded = True
+        exceeded = False
     else:
         str_date = datetime.datetime.strftime(now, DATE_FORMAT)
-        exceeded = False
+        exceeded = True
 
     return str_date, exceeded
 
