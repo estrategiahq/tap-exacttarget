@@ -286,7 +286,7 @@ class DataExtensionDataAccessObject(DataAccessObject):
             self.state = incorporate(self.state,
                                      table,
                                      replication_key,
-                                     start)
+                                     end)
 
             save_state(self.state)
 
