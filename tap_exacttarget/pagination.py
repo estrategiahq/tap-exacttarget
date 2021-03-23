@@ -19,7 +19,7 @@ def increment_date(date_value, unit=None):
     date_obj = datetime.datetime.strptime(date_value, DATE_FORMAT)
 
     incremented_date_obj = date_obj + datetime.timedelta(**unit)
-    now = datetime.now() - datetime.timedelta(minutes=5)
+    now = datetime.datetime.now() - datetime.timedelta(minutes=5)
 
     if incremented_date_obj < now:
         str_date = datetime.datetime.strftime(incremented_date_obj, DATE_FORMAT)
