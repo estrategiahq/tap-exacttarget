@@ -19,8 +19,14 @@ def increment_date(date_value, unit=None):
     date_obj = datetime.datetime.strptime(date_value, DATE_FORMAT)
 
     incremented_date_obj = date_obj + datetime.timedelta(**unit)
+    now = datetime.now() - datetime.timedelta(minutes=5)
 
-    return datetime.datetime.strftime(incremented_date_obj, DATE_FORMAT)
+    if incremented_date_obj < now:
+        str_date = datetime.datetime.strftime(incremented_date_obj, DATE_FORMAT)
+    else:
+        str_date = datetime.datetime.strftime(now, DATE_FORMAT)
+
+    return str_date
 
 
 def get_date_page(field, start, unit):
