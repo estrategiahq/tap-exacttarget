@@ -234,16 +234,14 @@ class DataExtensionDataAccessObject(DataAccessObject):
 
         keys.remove('CategoryID')
 
-        replication_key = None
+        replication_key = self.state.get('bookmarks', {}) \
+                                    .get(table, {}) \
+                                    .get('field', None)
 
         start = get_last_record_value_for_table(self.state, table)
 
         if start is None:
             start = self.config.get('start_date')
-
-        for key in ['ModifiedDate', 'JoinDate']:
-            if key in keys:
-                replication_key = key
 
         pagination_unit = self.config.get(
             'pagination__data_extension_interval_unit', 'days')
@@ -251,8 +249,6 @@ class DataExtensionDataAccessObject(DataAccessObject):
             'pagination__data_extension_interval_quantity', 7)
 
         unit = {pagination_unit: int(pagination_quantity)}
-
-        end = increment_date(start, unit)
 
         parent_result = None
         parent_extension = None
@@ -270,7 +266,9 @@ class DataExtensionDataAccessObject(DataAccessObject):
         parent_extension = next(parent_result)
         parent_category_id = parent_extension.CategoryID
 
-        while before_now(start) or replication_key is None:
+        exceeded = False
+        while (not exceeded) or replication_key is None:
+            end, exceeded = increment_date(start, unit)
             self._replicate(
                 customer_key,
                 keys,
@@ -288,9 +286,8 @@ class DataExtensionDataAccessObject(DataAccessObject):
             self.state = incorporate(self.state,
                                      table,
                                      replication_key,
-                                     start)
+                                     end)
 
             save_state(self.state)
 
             start = end
-            end = increment_date(start, unit)
